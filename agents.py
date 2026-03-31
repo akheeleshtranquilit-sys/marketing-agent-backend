@@ -18,7 +18,6 @@ GLOBAL_GUIDELINES = [
     "Do not reference sensitive demographics or protected attributes.",
 ]
 
-
 # ----------------------------------------------------
 # REAL WEB SEARCH (SERPAPI)
 # ----------------------------------------------------
@@ -29,14 +28,10 @@ def web_search(query):
     - Title
     - Snippet
     - URL
-
-    REQUIREMENT:
-    Add SERPAPI_KEY to Railway → Variables
     """
     api_key = os.getenv("SERPAPI_KEY")
 
     if not api_key:
-        # fallback if no key is found
         return [f"[NO API KEY] SERPAPI_KEY missing. Could not fetch real data for '{query}'."]
 
     url = "https://serpapi.com/search"
@@ -57,14 +52,13 @@ def web_search(query):
     if "organic_results" in data:
         for item in data["organic_results"][:5]:
             title = item.get("title", "No title")
-            snippet = item.get("snippet", "No description available")
-            link = item.get("link", "No link available")
+            snippet = item.get("snippet", "No description")
+            link = item.get("link", "No link")
             results.append(f"{title} – {snippet} ({link})")
     else:
         results.append("No organic results from SERPAPI.")
 
     return results
-
 
 # ----------------------------------------------------
 # STRATEGIST AGENT
@@ -99,7 +93,6 @@ class StrategistAgent:
 
         return strategy
 
-
 # ----------------------------------------------------
 # COPYWRITER AGENT
 # ----------------------------------------------------
@@ -129,7 +122,6 @@ class CopywriterAgent:
 
         return copy
 
-
 # ----------------------------------------------------
 # ANALYST AGENT
 # ----------------------------------------------------
@@ -150,10 +142,8 @@ class AnalystAgent:
         }
         return analysis
 
-
-
 # ----------------------------------------------------
-# ✅ COMPETITOR ANALYSIS AGENT (REAL DATA + ADVANCED LOGIC)
+# ✅ COMPETITOR ANALYSIS AGENT (REAL DATA + SMART FALLBACKS)
 # ----------------------------------------------------
 class CompetitorAnalysisAgent:
     def __init__(self):
@@ -164,28 +154,26 @@ class CompetitorAnalysisAgent:
             "Use ethical positioning practices."
         ]
 
-    # ✅ Simple Overview (REAL competitor names)
+    # ✅ REAL competitor extraction
     def simple_analysis(self, objective):
         search_query = f"{objective} industrial PC competitors"
         real_results = web_search(search_query)
 
         competitor_names = []
 
-        # Extract real competitor names from SERPAPI results
         for result in real_results:
             text = result
 
-            # Extract company name before dash or before parentheses
+            # Extract names before dash or parentheses
             if "–" in text:
                 name = text.split("–")[0].strip()
             else:
                 name = text.split("(")[0].strip()
 
-            # Avoid empty / weird values
             if len(name) > 1:
                 competitor_names.append(name)
 
-        # ✅ If SERPAPI returns no usable companies, use known industry competitors
+        # ✅ Fallback to real industrial PC companies
         if not competitor_names:
             competitor_names = [
                 "OnLogic",
@@ -220,41 +208,41 @@ class CompetitorAnalysisAgent:
             ],
         }
 
-    # ✅ Advanced SWOT + Feature Comparison + Pricing
+    # ✅ Enhanced SWOT + Pricing + Feature Comparison
     def advanced_analysis(self):
         return {
             "swot": {
                 "OnLogic": {
-                    "strengths": ["Strong reputation", "High‑quality rugged PCs"],
-                    "weaknesses": ["More expensive than competitors"],
-                    "opportunities": ["AI Edge expansion"],
+                    "strengths": ["Strong reputation", "High-quality rugged PCs"],
+                    "weaknesses": ["Higher pricing vs competitors"],
+                    "opportunities": ["AI edge expansion"],
                     "threats": ["Advantech, Kontron increasing market share"]
                 },
                 "Advantech": {
                     "strengths": ["Largest IPC manufacturer globally"],
-                    "weaknesses": ["Very large catalogue = complexity"],
-                    "opportunities": ["Edge‑as‑a‑Service growth"],
-                    "threats": ["Smaller agile vendors like OnLogic"]
+                    "weaknesses": ["Large catalogue = complexity"],
+                    "opportunities": ["Edge-as-a-Service growth"],
+                    "threats": ["Smaller agile IPC vendors"]
                 }
             },
             "feature_comparison": {
                 "Your App": ["AI automation", "Fast setup", "Modern UI"],
-                "OnLogic": ["Fanless PCs", "Industrial rugged systems", "Edge AI support"],
-                "Advantech": ["Wide product range", "AI edge servers", "WISE‑DeviceOn management"]
+                "OnLogic": ["Fanless PCs", "Rugged systems", "Edge AI"],
+                "Advantech": ["Wide IPC range", "AI servers", "WISE-DeviceOn"]
             },
             "pricing_comparison": {
                 "Your App": "$29/mo",
-                "OnLogic": "$500–$2500 per unit (typical)",
-                "Advantech": "$400–$2200 per unit (typical)"
+                "OnLogic": "$500–$2500 typical",
+                "Advantech": "$400–$2200 typical"
             },
         }
 
-    # ✅ Web Research (Raw SERPAPI results)
+    # ✅ SERPAPI Web Research
     def web_research_analysis(self, objective):
         results = web_search(objective)
         return {"web_research": results}
 
-    # ✅ Final combined output
+    # ✅ Final output
     def run(self, objective):
         return {
             "simple": self.simple_analysis(objective),
@@ -262,49 +250,6 @@ class CompetitorAnalysisAgent:
             "web_research": self.web_research_analysis(objective),
             "guidelines_respected": self.agent_guidelines,
         }
-
-    # ✅ Advanced SWOT + Pricing + Feature Comparison
-    def advanced_analysis(self):
-        return {
-            "swot": {
-                "Competitor A": {
-                    "strengths": ["Strong reputation", "Good onboarding"],
-                    "weaknesses": ["Expensive", "No automation"],
-                    "opportunities": ["Better AI features"],
-                    "threats": ["Emerging startups"]
-                },
-                "Competitor B": {
-                    "strengths": ["Affordable", "Large customer base"],
-                    "weaknesses": ["Poor UI", "No analytics"],
-                    "opportunities": ["Offer premium AI analytics"],
-                    "threats": ["Market saturation"]
-                }
-            },
-            "feature_comparison": {
-                "Your App": ["AI automation", "Fast setup", "Modern UI"],
-                "Competitor A": ["Manual features", "Good onboarding"],
-                "Competitor B": ["Cheap", "Basic tools"]
-            },
-            "pricing_comparison": {
-                "Your App": "$29/mo",
-                "Competitor A": "$49/mo",
-                "Competitor B": "$19/mo"
-            },
-        }
-
-    # ✅ Web Research
-    def web_research_analysis(self, objective):
-        results = web_search(objective)
-        return {"web_research": results}
-
-    def run(self, objective):
-        return {
-            "simple": self.simple_analysis(objective),
-            "advanced": self.advanced_analysis(),
-            "web_research": self.web_research_analysis(objective),
-            "guidelines_respected": self.agent_guidelines,
-        }
-
 
 # ----------------------------------------------------
 # SUPERVISOR
