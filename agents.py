@@ -266,4 +266,3 @@ class Supervisor:
             "competitor_analysis": competitor_analysis,
             "global_guidelines": self.global_guidelines,
         }
-``
