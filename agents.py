@@ -151,6 +151,7 @@ class AnalystAgent:
         return analysis
 
 
+
 # ----------------------------------------------------
 # ✅ COMPETITOR ANALYSIS AGENT (REAL DATA + ADVANCED LOGIC)
 # ----------------------------------------------------
@@ -163,13 +164,45 @@ class CompetitorAnalysisAgent:
             "Use ethical positioning practices."
         ]
 
-    # ✅ Simple Overview
+    # ✅ Simple Overview (REAL competitor names)
     def simple_analysis(self, objective):
-        real_results = web_search(f"competitors of {objective}")
+        search_query = f"{objective} industrial PC competitors"
+        real_results = web_search(search_query)
+
+        competitor_names = []
+
+        # Extract real competitor names from SERPAPI results
+        for result in real_results:
+            text = result
+
+            # Extract company name before dash or before parentheses
+            if "–" in text:
+                name = text.split("–")[0].strip()
+            else:
+                name = text.split("(")[0].strip()
+
+            # Avoid empty / weird values
+            if len(name) > 1:
+                competitor_names.append(name)
+
+        # ✅ If SERPAPI returns no usable companies, use known industry competitors
+        if not competitor_names:
+            competitor_names = [
+                "OnLogic",
+                "Advantech",
+                "Kontron",
+                "AAEON",
+                "Lanner Electronics",
+                "Axiomtek",
+                "Arbor Industrial",
+                "IEI Integration",
+                "WinSystems",
+                "SECO / Seattle Embedded",
+            ]
 
         return {
+            "competitors": competitor_names,
             "real_world_results": real_results,
-            "competitors": ["Competitor A", "Competitor B", "Competitor C"],
             "strengths": [
                 "Strong brand awareness",
                 "Good UX/interface",
@@ -185,6 +218,49 @@ class CompetitorAnalysisAgent:
                 "Compete on pricing/value",
                 "Differentiate through automation"
             ],
+        }
+
+    # ✅ Advanced SWOT + Feature Comparison + Pricing
+    def advanced_analysis(self):
+        return {
+            "swot": {
+                "OnLogic": {
+                    "strengths": ["Strong reputation", "High‑quality rugged PCs"],
+                    "weaknesses": ["More expensive than competitors"],
+                    "opportunities": ["AI Edge expansion"],
+                    "threats": ["Advantech, Kontron increasing market share"]
+                },
+                "Advantech": {
+                    "strengths": ["Largest IPC manufacturer globally"],
+                    "weaknesses": ["Very large catalogue = complexity"],
+                    "opportunities": ["Edge‑as‑a‑Service growth"],
+                    "threats": ["Smaller agile vendors like OnLogic"]
+                }
+            },
+            "feature_comparison": {
+                "Your App": ["AI automation", "Fast setup", "Modern UI"],
+                "OnLogic": ["Fanless PCs", "Industrial rugged systems", "Edge AI support"],
+                "Advantech": ["Wide product range", "AI edge servers", "WISE‑DeviceOn management"]
+            },
+            "pricing_comparison": {
+                "Your App": "$29/mo",
+                "OnLogic": "$500–$2500 per unit (typical)",
+                "Advantech": "$400–$2200 per unit (typical)"
+            },
+        }
+
+    # ✅ Web Research (Raw SERPAPI results)
+    def web_research_analysis(self, objective):
+        results = web_search(objective)
+        return {"web_research": results}
+
+    # ✅ Final combined output
+    def run(self, objective):
+        return {
+            "simple": self.simple_analysis(objective),
+            "advanced": self.advanced_analysis(),
+            "web_research": self.web_research_analysis(objective),
+            "guidelines_respected": self.agent_guidelines,
         }
 
     # ✅ Advanced SWOT + Pricing + Feature Comparison
