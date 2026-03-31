@@ -1,0 +1,221 @@
+
+from datetime import datetime
+
+# ----------------------------------------------------
+# GLOBAL MARKETING GUIDELINES (unchanged)
+# ----------------------------------------------------
+GLOBAL_GUIDELINES = [
+    "Maintain a professional but friendly tone.",
+    "Always write clearly and concisely.",
+    "Avoid jargon unless the audience is technical.",
+    "Never make unrealistic or exaggerated claims.",
+    "Use brand-safe and inclusive language.",
+    "Avoid mentioning competitors directly.",
+    "Prefer value propositions over features.",
+    "Use UK spelling conventions.",
+    "Do not reference sensitive demographics or protected attributes.",
+]
+
+
+# ----------------------------------------------------
+# OPTIONAL WEB SEARCH HOOK (NO API required)
+# ----------------------------------------------------
+def web_search(query):
+    """
+    Placeholder for real competitor research.
+    Currently returns mock data, but you can integrate:
+    - Google Custom Search API
+    - SERPAPI
+    - RapidAPI search endpoints
+    """
+    return [
+        f"Latest info about {query} (real data requires API integration)."
+    ]
+
+
+# ----------------------------------------------------
+# STRATEGIST AGENT
+# ----------------------------------------------------
+class StrategistAgent:
+    def __init__(self):
+        self.agent_guidelines = [
+            "Base all recommendations on audience insights.",
+            "Ensure each campaign has measurable KPIs.",
+            "Channel strategies must be justified with reasoning.",
+            "Positioning must be clear and high-level.",
+        ]
+
+    def run(self, objective):
+        if "AI" in objective:
+            audience = ["Tech Professionals", "Marketing Teams", "Startup Founders"]
+        else:
+            audience = ["General Online Consumers"]
+
+        strategy = {
+            "objective": objective,
+            "audience": audience,
+            "pillars": [
+                "Education",
+                "Pain Point Solving",
+                "Social Proof",
+                "Feature Highlights"
+            ],
+            "channels": ["LinkedIn", "Email", "Google Ads"],
+            "guidelines_respected": self.agent_guidelines,
+        }
+
+        return strategy
+
+
+# ----------------------------------------------------
+# COPYWRITER AGENT
+# ----------------------------------------------------
+class CopywriterAgent:
+    def __init__(self):
+        self.agent_guidelines = [
+            "Tone must be persuasive but not pushy.",
+            "Copy must remain concise and skimmable.",
+            "Never exaggerate results or create unrealistic expectations.",
+            "CTA must be singular and clear.",
+            "Avoid technical jargon unless required.",
+        ]
+
+    def run(self, strategy):
+        audience = ", ".join(strategy["audience"])
+
+        copy = {
+            "headline": f"{strategy['objective']} — Designed for {audience}",
+            "ad_copy": (
+                f"Our solution helps {audience} work smarter and more efficiently. "
+                "Built with a value-driven focus, it addresses key challenges clearly "
+                "and responsibly while aligning with industry best practices."
+            ),
+            "cta": "Learn More",
+            "guidelines_respected": self.agent_guidelines,
+        }
+
+        return copy
+
+
+# ----------------------------------------------------
+# ANALYST AGENT
+# ----------------------------------------------------
+class AnalystAgent:
+    def __init__(self):
+        self.agent_guidelines = [
+            "Insights must be actionable, not generic.",
+            "Avoid subjective language — stick to data-driven reasoning.",
+            "No fabricated metrics — use projections only.",
+            "Highlight the ‘why’ behind each insight.",
+        ]
+
+    def run(self, strategy):
+        analysis = {
+            "projection": "Expected 15–25% engagement lift based on similar industry campaigns.",
+            "recommended_kpis": ["CTR", "CPC", "Lead Conversion Rate"],
+            "guidelines_respected": self.agent_guidelines
+        }
+        return analysis
+
+
+# ----------------------------------------------------
+# NEW ✅ COMPETITOR ANALYSIS AGENT
+# ----------------------------------------------------
+class CompetitorAnalysisAgent:
+    def __init__(self):
+        self.agent_guidelines = [
+            "Competitor insights must remain factual.",
+            "Avoid defamatory or unverifiable claims.",
+            "Focus on opportunities, not attacks.",
+            "Use ethical positioning practices."
+        ]
+
+    def simple_analysis(self, objective):
+        return {
+            "competitors": ["Competitor A", "Competitor B", "Competitor C"],
+            "strengths": [
+                "Strong brand awareness",
+                "Good UX/interface",
+                "Large user base"
+            ],
+            "weaknesses": [
+                "Higher pricing",
+                "Slower innovation cycles",
+                "Limited personalisation"
+            ],
+            "opportunities": [
+                "Position as more efficient",
+                "Compete on pricing/value",
+                "Differentiate through automation"
+            ],
+        }
+
+    def advanced_analysis(self):
+        return {
+            "swot": {
+                "Competitor A": {
+                    "strengths": ["Strong reputation", "Good onboarding"],
+                    "weaknesses": ["Expensive", "No automation"],
+                    "opportunities": ["Better AI features"],
+                    "threats": ["Emerging startups"]
+                },
+                "Competitor B": {
+                    "strengths": ["Cheap", "Large customer base"],
+                    "weaknesses": ["Poor UI", "No analytics"],
+                    "opportunities": ["Offer premium AI analytics"],
+                    "threats": ["Market saturation"]
+                }
+            },
+            "feature_comparison": {
+                "Your App": ["AI automation", "Fast setup", "Modern UI"],
+                "Competitor A": ["Manual features", "Good onboarding"],
+                "Competitor B": ["Cheap", "Basic tools"]
+            },
+            "pricing_comparison": {
+                "Your App": "$29/mo",
+                "Competitor A": "$49/mo",
+                "Competitor B": "$19/mo"
+            },
+        }
+
+    def web_research_analysis(self, objective):
+        search_results = web_search(objective)
+        return {
+            "web_research": search_results
+        }
+
+    def run(self, objective):
+        return {
+            "simple": self.simple_analysis(objective),
+            "advanced": self.advanced_analysis(),
+            "web_research": self.web_research_analysis(objective),
+            "guidelines_respected": self.agent_guidelines,
+        }
+
+
+# ----------------------------------------------------
+# SUPERVISOR (NOW UPDATED TO INCLUDE COMPETITOR ANALYSIS)
+# ----------------------------------------------------
+class Supervisor:
+    def __init__(self):
+        self.global_guidelines = GLOBAL_GUIDELINES
+        self.strategist = StrategistAgent()
+        self.copywriter = CopywriterAgent()
+        self.analyst = AnalystAgent()
+        self.competitor = CompetitorAnalysisAgent()
+
+    def run_campaign(self, objective):
+        strategy = self.strategist.run(objective)
+        copy = self.copywriter.run(strategy)
+        analysis = self.analyst.run(strategy)
+        competitor_analysis = self.competitor.run(objective)
+
+        return {
+            "timestamp": datetime.now().isoformat(),
+            "objective": objective,
+            "strategy": strategy,
+            "copy": copy,
+            "analysis": analysis,
+            "competitor_analysis": competitor_analysis,
+            "global_guidelines": self.global_guidelines,
+        }
