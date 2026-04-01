@@ -23,12 +23,26 @@ GLOBAL_GUIDELINES = [
 def web_search(query):
     api_key = os.getenv("SERPAPI_KEY")
 
-    print("DEBUG SERPAPI_KEY:", api_key)  # <-- SANITY CHECK
+    print("DEBUG SERPAPI_KEY:", api_key)  # SANITY CHECK
 
     if not api_key:
         return [f"[NO API KEY] Could not fetch real data for '{query}'."]
 
+    url = "https://serpapi.com/search"
+    params = {
+        "engine": "google",
+        "q": query,
+        "api_key": api_key
+    }
+
+    try:
+        response = requests.get(url, params=params, timeout=10)
+        data = response.json()
+    except Exception as e:
+        return [f"Error fetching real data: {e}"]
+
     results = []
+
     if "organic_results" in data:
         for item in data["organic_results"][:5]:
             title = item.get("title", "No title")
@@ -39,6 +53,7 @@ def web_search(query):
         results.append("No SERPAPI results found.")
 
     return results
+
 
 # ----------------------------------------------------
 # STRATEGIST AGENT
